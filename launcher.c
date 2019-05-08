@@ -2,6 +2,7 @@
 #include	<stdio.h>
 #include	<signal.h>
 #include	<string.h>
+#include 	<unistd.h>
 
 int counter = 0;
 int shouldContinue = 1;
@@ -24,14 +25,16 @@ void sigUSR1Handler(int sig){
 
 int	main(int argc, char *argv[]){
 
+	resetTimeInSec = atoi(argv[1]);
+	signalTimeInSec = atoi(argv[2]);
+
 	// set up the struct
+	// install the signal handler
 	struct sigaction act;
 	memset(&act, '\0', sizeof(act));
 	act.sa_handler = sigAlarmHandler;
-	act.sa_handler = sigUSR1Handler;
-
-	// install the signal handler
 	signal(SIGINT, sigAlarmHandler);
+	act.sa_handler = sigUSR1Handler;
 	signal(SIGINT, sigUSR1Handler);
 
 	// making 3 child processes
@@ -41,14 +44,12 @@ int	main(int argc, char *argv[]){
 	for(i; i<3; i++){
 		fork();
 		processes[i] = getpid();
+		printf("signaller %d signalling parent\n", processes[i]);
 	}
 	//printf("[son] pid %d from [parent] pid %d\n",getpid(),getppid()); 
 
 	const int BUFFER_LEN = 64;
 	char buffer[BUFFER_LEN];
-
-	resetTimeInSec = atoi(argv[1]);
-	signalTimeInSec = atoi(argv[2]);
 
 	snprintf(buffer,BUFFER_LEN,"%d",signalTimeInSec);
 
