@@ -12,6 +12,7 @@ void sigAlarmHandler(int sig){
 }
 
 void sigUSR1Handler(int sig){
+	printf("Signal %d \n", getpid());
 	shouldContinue = 0;
 }
 
