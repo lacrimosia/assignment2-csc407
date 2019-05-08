@@ -35,9 +35,13 @@ int	main(int argc, char *argv[]){
 	signal(SIGINT, sigUSR1Handler);
 
 	// making 3 child processes
-	fork();
-	fork();
-	fork();
+	// put the processes into the array
+	int processes[3];
+	int i=0;
+	for(i; i<3; i++){
+		fork();
+		processes[i] = getpid();
+	}
 	//printf("[son] pid %d from [parent] pid %d\n",getpid(),getppid()); 
 
 	const int BUFFER_LEN = 64;
