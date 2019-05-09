@@ -55,7 +55,7 @@ int	main(int argc, char *argv[]){
 
 	alarm(resetTimeInSec);
 
-	while  (shouldContinue){
+	while(shouldContinue){
     	sleep(1);
   	}	
 
