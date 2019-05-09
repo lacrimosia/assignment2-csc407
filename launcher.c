@@ -23,9 +23,8 @@ void sigAlarmHandler(int sig){
 }
 
 void sigUSR1Handler(int sig){
-	printf("Got %d \n", counter);
 	counter += 1;
-	
+	printf("Got %d \n", counter);
 
 	if(counter >= 3){
 		shouldContinue = 0;
@@ -62,11 +61,11 @@ int	main(int argc, char *argv[]){
 	struct sigaction act;
 	memset(&act, '\0', sizeof(act));
 	act.sa_handler = sigAlarmHandler;
-	//sigaction(SIGALRM,&act,NULL);
-	signal(SIGALRM, sigAlarmHandler);
+	sigaction(SIGALRM,&act,NULL);
+	//signal(SIGALRM, sigAlarmHandler);
 	act.sa_handler = sigUSR1Handler;
-	//sigaction(SIGUSR1,&act,NULL);
-	signal(SIGUSR1, sigUSR1Handler);
+	sigaction(SIGUSR1,&act,NULL);
+	
 
 	const int BUFFER_LEN = 64;
 	char buffer[BUFFER_LEN];
@@ -87,7 +86,7 @@ int	main(int argc, char *argv[]){
             //printf("[son] pid %d from [parent] pid %d\n",getpid());  
             exit(0);
         }else{
-        	printf("signaller %d signalling parent\n", getppid());
+        	printf("signaller %d signalling parent\n", getpid());
         }
     } 
 	//for(i; i<3; i++){
