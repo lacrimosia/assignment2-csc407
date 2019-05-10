@@ -6,41 +6,38 @@
 
 int maxSignalTime;
 int shouldContinue = 1;
+const int MIN_TIME_IN_SECS = 2;
 
 void sigAlarmHandler(int sig){
-  // try
+  printf("signaller %d signalling parent\n", getpid());
   kill(getppid(), SIGUSR1);
   alarm(rand() % maxSignalTime + 1);
 }
 
-void sigUSR1Handler(int sig){
-	printf("Signal %d \n", getpid());
+void sigIntHandler(int sig){
 	shouldContinue = 0;
+	printf("signaller %d stopping\n", getpid());
 }
 
 int	main(int argc, char *argv[]){
-
-	// TODO
-	// check to see if we need to take in the 2 parameters from launcher
-	if(argc != 2){
-		printf("Usage: signaller <maxSignalTime> \n");
+	if(atoi(argv[1]) >= MIN_TIME_IN_SECS){
+		maxSignalTime = atoi(argv[1]);
+	}else{
 		return(EXIT_FAILURE);
 	}
 
-	if(atoi(argv[1]) >= MIN_TIME_IN_SECS){
-		maxSignalTime = atoi(argv[1]);
-	}
-	
-
-	// TODO
-	// two signal handlers, one for SIGAlarm/Sigusr1, other for SIGINT
-
 	struct sigaction act;
+	struct sigaction act2;
+
 	memset(&act, '\0', sizeof(act));
+
+	memset(&act2, '\0', sizeof(act2));
+
 	act.sa_handler = sigAlarmHandler;
 	sigaction(SIGALRM,&act,NULL);
-	act.sa_handler = sigUSR1Handler;
-	sigaction(SIGUSR1,&act,NULL);
+
+	act2.sa_handler = sigIntHandler;
+	sigaction(SIGINT,&act2,NULL);
 
 	srand(getpid());
 
